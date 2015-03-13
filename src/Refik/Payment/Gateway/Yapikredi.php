@@ -114,7 +114,7 @@ class Yapikredi extends Gateway {
      *    
      *    
      */
-    protected function void($order_id, $transactionNo)
+    public function void($order_id, $transactionNo)
     {
         $reverse = array(
             'transaction' => 'sale',
@@ -209,7 +209,7 @@ class Yapikredi extends Gateway {
     }
 
 
-    protected function saleTdsResponse()
+    public function saleTdsResponse()
     {
         $approved = (bool)($this->xpath('approved') === '1');
 
