@@ -237,7 +237,11 @@ abstract class Gateway {
      */
     protected function parseAmount($amount)
     {
-        return $amount;
+        $amount = preg_replace('/[^0-9,.]/', '', $amount);
+        $amount = str_replace(array('.',','), '.', $amount);
+        $amount = $amount * 100;
+        
+        return (int)$amount;
     }
 
 
@@ -246,6 +250,12 @@ abstract class Gateway {
      */
     protected function parseCCNo($ccNo)
     {
+        // Nümerik olmayan tüm karakterleri çıkar
+        $ccNo = preg_replace('/[^0-9]/', '', $ccNo);
+
+        // TODO:
+        // Sonuç, kredi kartı numarası formatına uymuyorsa throw exception
+
         return $ccNo;
     }
 

@@ -260,6 +260,7 @@ class Yapikredi extends Gateway {
         return $this->saleTdsResponse();
     }
 
+        
     
 
 
