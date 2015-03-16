@@ -1,2 +1,2 @@
 # payment
-Türk bankaları için Sanal POS'ları için Gateway
+Türk bankaları Sanal POS'ları için Gateway
