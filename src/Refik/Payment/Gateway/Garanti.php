@@ -229,7 +229,7 @@ class Garanti extends Gateway {
     public function refund($order_id, $transactionNo, $amount, $currencyCode)
     {
         $this->request['Transaction']['Type']   = 'refund';
-        $this->request['Transaction']['Amount'] = $amount;
+        $this->request['Transaction']['Amount'] = $this->parseAmount($amount);
         $this->request['Transaction']['OriginalRetrefNum'] = $transactionNo;
         
         $this->request['Order']['OrderID'] = $order_id;
