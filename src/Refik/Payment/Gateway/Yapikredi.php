@@ -163,7 +163,7 @@ class Yapikredi extends Gateway {
     public function refund($order_id, $transactionNo, $amount, $currencyCode)
     {
         $return = array(
-            'amount'       => $this->parseAmount($amount);,
+            'amount'       => $this->parseAmount($amount),
             'hostLogKey'   => $transactionNo,
             'currencyCode' => $this->currencyCode[$currencyCode],
         );
