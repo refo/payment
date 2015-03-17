@@ -265,6 +265,48 @@ abstract class Gateway {
      */
     protected function parseExp($exp)
     {
+        // TODO:
+        // Önceki class'dan hiç el değmeden aldım
+        // 
+
+        $format_exp = function($exp, $delim) {
+            $exp   = explode($delim, $exp, 2);
+            $exp_m = trim($exp[0]);
+            $exp_m = str_pad($exp_m, 2, '0', STR_PAD_LEFT);
+
+            $exp_y = trim($exp[1]);
+            $exp_y = substr($exp_y, -2);
+            
+            
+            //$exp   = $exp_y . $exp_m;
+            //return $exp;
+            return array(
+                'month' => $exp_m,
+                'year'  => $exp_y,
+            );
+        };
+        
+        $exp = trim($exp);
+        
+        switch(TRUE) {
+            case strpos($exp, '/') > 0:
+                $exp = $format_exp($exp, '/');
+                break;
+            case strpos($exp, ' ') > 0:
+                $exp = $format_exp($exp, ' ');
+                break;
+            case strlen($exp) == 4:
+                return array(
+                    'month' => substr($exp, 0, 2),
+                    'year'  => substr($exp, -2),
+                );
+                break;
+            default:
+                // Hata
+                $exp = NULL;
+                break;
+        }
+
         return $exp;
     }
 

@@ -263,39 +263,9 @@ class Yapikredi extends Gateway {
 
     protected function parseExp($exp)
     {
-        // TODO:
-        // Önceki class'dan hiç el değmeden aldım
-        // 
-
-        $format_exp = function($exp, $delim) {
-            $exp   = explode($delim, $exp, 2);
-            $exp_m = trim($exp[0]);
-            $exp_m = str_pad($exp_m, 2, '0', STR_PAD_LEFT);
-
-            $exp_y = trim($exp[1]);
-            $exp_y = substr($exp_y, -2);
-            
-            // YYAA
-            $exp   = $exp_y . $exp_m;
-            return $exp;
-        };
-        
-        $exp = trim($exp);
-        
-        switch(TRUE) {
-            case strpos($exp, '/') > 0:
-                $exp = $format_exp($exp, '/');
-                break;
-            case strpos($exp, ' ') > 0:
-                $exp = $format_exp($exp, ' ');
-                break;
-            default:
-                // Hata
-                $exp = NULL;
-                break;
-        }
-
-        return $exp;
+        $exp = parent::parseExp($exp);
+        // YYAA
+        return $exp['year'] . $exp['month'];
     }
 
     
