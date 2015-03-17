@@ -132,6 +132,14 @@ class Garanti extends Gateway {
     }
 
 
+    protected function parseExp($exp)
+    {
+        $exp = parent::parseExp($exp);
+        // AAYY
+        return $exp['month'] . $exp['year'];
+    }
+
+
     public function sale($order_id, $card, $amount, $currency = 'TRY', $installmentCount = 0)
     {
         if ($order_id == NULL) $order_id = $this->generateId();
@@ -246,15 +254,6 @@ class Garanti extends Gateway {
         $this->performTransaction();
         return $this->voidResponse();
     }
-
-
-    protected function parseExp($exp)
-    {
-        $exp = parent::parseExp($exp);
-        // AAYY
-        return $exp['month'] . $exp['year'];
-    }
-
 
 
 
