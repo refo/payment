@@ -1,13 +1,18 @@
-# payment
+# Payment
 Türk bankaları Sanal POS'ları için Gateway
 
-## Method checklist
+## Supported methods tasklist
 ### Garanti
-* sale
-* void
-* refund
+- [x] sale
+- [x] void
+- [x] refund
+- [ ] saleTds
+- [ ] saleTdsCallback
 
 ### Yapikredi
-* sale
-* void
-* refund
+- [x] sale
+- [x] void
+- [x] refund
+- [ ] saleTds
+- [ ] saleTdsCallback
+
