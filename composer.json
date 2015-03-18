@@ -6,6 +6,7 @@
     "homepage": "https://github.com/refo/payment",
     "author": "Refik ONAL",
     "require": {
+        "php": ">=5.4.0",
         "mashape/unirest-php": "2.3.*",
         "hashids/hashids": "1.0.*"
     },
