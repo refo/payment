@@ -2,13 +2,12 @@
 Türk bankaları Sanal POS'ları için Gateway
 
 ## Supported methods
-    
-    |          | sale | void | refund | saleTds | saleTdsCallback |
-    |:----     |:----:|:----:|:------:|:-------:|:---------------:|
-    |Garanti   | √    |  √   | √      | -       | -               |
-    |Yapikredi | √    |  √   | √      | -       | -               |
-    |Akbank    | -    |  -   | -      | -       | -               |
 
+|          | sale | void | refund | saleTds | saleTdsCallback |
+|:----     |:----:|:----:|:------:|:-------:|:---------------:|
+|Garanti   | √    |  √   | √      | -       | -               |
+|Yapikredi | √    |  √   | √      | -       | -               |
+|Akbank    | -    |  -   | -      | -       | -               |
 
 ## TODO:
 
