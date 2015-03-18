@@ -4,9 +4,7 @@
     "keywords": ["sanalpos", "vpos", "gvp", "posnet"],
     "type": "library",
     "homepage": "https://github.com/refo/payment",
-    //"license": "MIT",
     "author": "Refik ONAL",
-
     "require": {
         "mashape/unirest-php": "2.3.*",
         "hashids/hashids": "1.0.*"
@@ -15,5 +13,5 @@
         "psr-4": {
             "Refik\\Payment\\": "src/Refik/Payment"
         }
-    },
+    }
 }
