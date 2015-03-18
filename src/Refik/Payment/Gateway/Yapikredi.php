@@ -89,15 +89,16 @@ class Yapikredi extends Gateway {
         $approved = (bool)($this->xpath('approved') === '1');
 
         $return = array(
-            'approved'      => $approved,
-            'success'       => $approved,
-            'order_id'      => $this->request['sale']['orderID'],
-            'gateway_name'  => $this->gatewayName,
-            'bank_response' => $this->responseXMLString,
-            'authCode'      => $this->xpath('authCode'),
-            'transactionNo' => $this->xpath('hostlogkey'),
-            'error'         => $this->xpath('respCode'),
-            'error_message' => $this->xpath('respText'),
+            'approved'        => $approved,
+            'success'         => $approved,
+            'order_id'        => $this->request['sale']['orderID'],
+            'gateway_name'    => $this->gatewayName,
+            'bank_response'   => $this->responseXMLString,
+            'authCode'        => $this->xpath('authCode'),
+            'transactionNo'   => $this->xpath('hostlogkey'),
+            'transactionType' => 'sale',
+            'error'           => $this->xpath('respCode'),
+            'error_message'   => $this->xpath('respText'),
         );
 
         return $return;
@@ -143,14 +144,15 @@ class Yapikredi extends Gateway {
         $approved = (bool)($this->xpath('approved') === '1');
 
         $return = array(
-            'approved'      => $approved,
-            'success'       => $approved,
-            'gateway_name'  => $this->gatewayName,
-            'bank_response' => $this->responseXMLString,
-            'authCode'      => $this->xpath('authCode'),
-            'transactionNo' => $this->xpath('hostlogkey'),
-            'error'         => $this->xpath('respCode'),
-            'error_message' => $this->xpath('respText'),
+            'approved'        => $approved,
+            'success'         => $approved,
+            'gateway_name'    => $this->gatewayName,
+            'bank_response'   => $this->responseXMLString,
+            'authCode'        => $this->xpath('authCode'),
+            'transactionNo'   => $this->xpath('hostlogkey'),
+            'transactionType' => 'void',
+            'error'           => $this->xpath('respCode'),
+            'error_message'   => $this->xpath('respText'),
         );
 
         return $return;
@@ -171,7 +173,9 @@ class Yapikredi extends Gateway {
         $this->request['return'] = $return;
 
         $this->performTransaction();
-        return $this->voidResponse();
+        $return = $this->voidResponse();
+        $return['transactionType'] = 'refund';
+        return $return;
     }
 
 
@@ -214,14 +218,14 @@ class Yapikredi extends Gateway {
         $approved = (bool)($this->xpath('approved') === '1');
 
         $form = array(
-            'mid' => $this->config('mid'),
-            'posnetID' => $this->config('posnetid'),
-            'posnetData'  => $this->xpath('data1'),
-            'posnetData2' => $this->xpath('data2'),
-            'digest'  => $this->xpath('sign'),
-            'vftCode' => '00',
-            'lang'    => 'tr',
-            'url'     => '',
+            'mid'               => $this->config('mid'),
+            'posnetID'          => $this->config('posnetid'),
+            'posnetData'        => $this->xpath('data1'),
+            'posnetData2'       => $this->xpath('data2'),
+            'digest'            => $this->xpath('sign'),
+            'vftCode'           => '00',
+            'lang'              => 'tr',
+            'url'               => '',
             'merchantReturnURL' => '',
             'openANewWindow'    => '1',
         );

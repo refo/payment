@@ -177,15 +177,16 @@ class Garanti extends Gateway {
         $approved = $this->isApproved();
 
         $return = array(
-            'approved'      => $approved,
-            'success'       => $approved,
-            'order_id'      => $this->request['Order']['OrderID'],
-            'gateway_name'  => $this->gatewayName,
-            'bank_response' => $this->responseXMLString,
-            'authCode'      => $this->xpath('Transaction/AuthCode'),
-            'transactionNo' => $this->xpath('Transaction/RetrefNum'),
-            'error'         => $this->xpath('Response/ReasonCode'),
-            'error_message' => $this->xpath('Response/SysErrMsg'),
+            'approved'        => $approved,
+            'success'         => $approved,
+            'order_id'        => $this->request['Order']['OrderID'],
+            'gateway_name'    => $this->gatewayName,
+            'bank_response'   => $this->responseXMLString,
+            'authCode'        => $this->xpath('Transaction/AuthCode'),
+            'transactionNo'   => $this->xpath('Transaction/RetrefNum'),
+            'transactionType' => 'sale',
+            'error'           => $this->xpath('Response/ReasonCode'),
+            'error_message'   => $this->xpath('Response/SysErrMsg'),
         );
 
         return $return;
@@ -219,15 +220,16 @@ class Garanti extends Gateway {
         $approved = $this->isApproved();
 
         $return = array(
-            'approved'      => $approved,
-            'success'       => $approved,
+            'approved'        => $approved,
+            'success'         => $approved,
             //'order_id'      => $this->request['Order']['OrderID'],
-            'gateway_name'  => $this->gatewayName,
-            'bank_response' => $this->responseXMLString,
-            'authCode'      => $this->xpath('Transaction/AuthCode'),
-            'transactionNo' => $this->xpath('Transaction/RetrefNum'),
-            'error'         => $this->xpath('Response/ReasonCode'),
-            'error_message' => $this->xpath('Response/ErrorMsg'),
+            'gateway_name'    => $this->gatewayName,
+            'bank_response'   => $this->responseXMLString,
+            'authCode'        => $this->xpath('Transaction/AuthCode'),
+            'transactionNo'   => $this->xpath('Transaction/RetrefNum'),
+            'transactionType' => 'void',
+            'error'           => $this->xpath('Response/ReasonCode'),
+            'error_message'   => $this->xpath('Response/ErrorMsg'),
         );
 
         return $return;
@@ -252,7 +254,9 @@ class Garanti extends Gateway {
 
         $this->appendHashData('refundpass');
         $this->performTransaction();
-        return $this->voidResponse();
+        $return = $this->voidResponse();
+        $return['transactionType'] = 'refund';
+        return $return;
     }
 
 
