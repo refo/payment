@@ -3,6 +3,7 @@
     "description": "Vpos Payment",
     "keywords": ["sanalpos", "vpos", "gvp", "posnet"],
     "type": "library",
+    "license": "MIT",
     "homepage": "https://github.com/refo/payment",
     "author": "Refik ONAL",
     "require": {
