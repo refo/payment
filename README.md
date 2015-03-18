@@ -16,3 +16,9 @@ Türk bankaları Sanal POS'ları için Gateway
 - [ ] saleTds
 - [ ] saleTdsCallback
 
+### Akbank
+- [ ] sale
+- [ ] void
+- [ ] refund
+- [ ] saleTds
+- [ ] saleTdsCallback
