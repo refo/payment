@@ -78,9 +78,12 @@ class Yapikredi extends Gateway {
         }
 
         $this->request['sale'] = $sale;
-
         $this->performTransaction();
-        return $this->saleResponse();
+
+        $return             = $this->saleResponse();
+        $return['amount']   = $amount / 100;
+        $return['currency'] = $currency;
+        return $return; 
     }
 
 
@@ -164,17 +167,19 @@ class Yapikredi extends Gateway {
      */
     public function refund($order_id, $transactionNo, $amount, $currencyCode)
     {
-        $return = array(
-            'amount'       => $this->parseAmount($amount),
+        $amount = $this->parseAmount($amount);
+        $refund = array(
+            'amount'       => $amount,
             'hostLogKey'   => $transactionNo,
             'currencyCode' => $this->currencyCode[$currencyCode],
         );
 
-        $this->request['return'] = $return;
+        $this->request['return'] = $refund;
 
         $this->performTransaction();
         $return = $this->voidResponse();
         $return['transactionType'] = 'refund';
+        $return['amount'] = $amount / 100;
         return $return;
     }
 
