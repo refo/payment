@@ -218,7 +218,7 @@ class Yapikredi extends Gateway {
     }
 
 
-    public function saleTdsResponse()
+    protected function saleTdsResponse()
     {
         $approved = (bool)($this->xpath('approved') === '1');
 
