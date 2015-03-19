@@ -6,6 +6,7 @@ use SimpleXMLElement;
 use ReflectionClass;
 use DOMDocument;
 
+
 abstract class Gateway {
 
     public $test = FALSE;
