@@ -14,3 +14,4 @@ Türk bankaları Sanal POS'ları için Gateway
 - [ ] Gateway bağımsız 3DSecure
 - [ ] Bankalar ile XML alışverişinde "dikkat edilmesi gerekenler / atılması gereken taklalar" notları için birer README
 - [ ] Daha açıklayıcı README
+- [ ] Singleton, Laravel config kullanıyor. Bağımsız olmalı.
