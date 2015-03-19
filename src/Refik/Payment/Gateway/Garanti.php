@@ -203,7 +203,7 @@ class Garanti extends Gateway {
         $this->request['Transaction']['Amount'] = '1';
         $this->request['Transaction']['OriginalRetrefNum'] = $transactionNo;
         
-        //$this->request['Order']['OrderID'] = $order_id;
+        $this->request['Order']['OrderID'] = $order_id;
 
         $this->request['Terminal'] = [
             'MerchantID' => $this->config('merchant'),
