@@ -226,7 +226,7 @@ class Garanti extends Gateway {
         $return = array(
             'approved'        => $approved,
             'success'         => $approved,
-            'order_id'      => $this->request['Order']['OrderID'],
+            'order_id'        => $this->request['Order']['OrderID'],
             'gateway_name'    => $this->gatewayName,
             'bank_response'   => $this->responseXMLString,
             'authCode'        => $this->xpath('Transaction/AuthCode'),
