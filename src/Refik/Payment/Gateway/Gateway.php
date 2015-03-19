@@ -8,7 +8,7 @@ use DOMDocument;
 
 abstract class Gateway {
 
-    public $test = TRUE;
+    public $test = FALSE;
 
     protected $gatewayName;
 
