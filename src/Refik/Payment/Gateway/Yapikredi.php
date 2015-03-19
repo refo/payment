@@ -1,9 +1,7 @@
 <?php namespace Refik\Payment\Gateway;
 
-
-class Yapikredi extends Gateway {
-
-
+class Yapikredi extends Gateway
+{
     protected $xmlRoot   = 'posnetRequest';
     //protected $xmlAddDeclaration = TRUE;
     protected $httpVersion = '1.0';
@@ -20,7 +18,6 @@ class Yapikredi extends Gateway {
         'EUR' => 'EU',
     );
 
-
     protected function prepareRequest($endpointType = 'xml')
     {
         $this->request['mid'] = $this->config('mid');
@@ -32,16 +29,15 @@ class Yapikredi extends Gateway {
 
         parent::prepareRequest();
 
-        $this->requestBody = 'xmldata=' . urldecode($this->requestBody);
+        $this->requestBody = 'xmldata='.urldecode($this->requestBody);
     }
 
-
     /**
-     * 
+     *
      */
     protected function generateId($len = 24)
     {
-        return (string)parent::generateId($len);
+        return (string) parent::generateId($len);
 
         /*
         $timeAsSortableNumber = \TB\Helper::ts(time(), 'YmdHis');
@@ -54,10 +50,11 @@ class Yapikredi extends Gateway {
         //*/
     }
 
-
     public function sale($order_id, $card, $amount, $currency = 'TRY', $installmentCount = 0)
     {
-        if ($order_id == NULL) $order_id = $this->generateId();
+        if ($order_id == null) {
+            $order_id = $this->generateId();
+        }
         $amount       = $this->parseAmount($amount);
         $ccNo         = $this->parseCCNo($card['no']);
         $ccExp        = $this->parseExp($card['exp']);
@@ -83,13 +80,13 @@ class Yapikredi extends Gateway {
         $return             = $this->saleResponse();
         $return['amount']   = $amount / 100;
         $return['currency'] = $currency;
-        return $return; 
-    }
 
+        return $return;
+    }
 
     protected function saleResponse()
     {
-        $approved = (bool)($this->xpath('approved') === '1');
+        $approved = (bool) ($this->xpath('approved') === '1');
 
         $return = array(
             'approved'        => $approved,
@@ -107,16 +104,13 @@ class Yapikredi extends Gateway {
         return $return;
     }
 
-
     /**
-     * İPTAL işlemi
-     * 
+     * İPTAL işlemi.
+     *
      *  TODO:
      *  - Sadece 'sale' türündeki işlemleri iptal ediyor.
      *    İşlemden türünden bağımsız olarak çalışmalı.
      *    Argument olarak işlem türü istenebilir.
-     *    
-     *    
      */
     public function void($order_id, $transactionNo)
     {
@@ -128,23 +122,23 @@ class Yapikredi extends Gateway {
         $this->request['reverse'] = $reverse;
 
         $this->performTransaction();
+
         return $this->voidResponse();
     }
 
-
     /**
      * voidResponse
-     * Generic cevapları döndürmek için kullanılabilir
-     * 
+     * Generic cevapları döndürmek için kullanılabilir.
+     *
      *  - saleResponse 'dan farklı olarak, order_id cevaba dahil değil
      *  - order_id, request array'inde, order_id döndürmek için farklı
      *    bir yol bulunabilir.
-     * 
+     *
      * @return Array Response array
      */
     protected function voidResponse()
     {
-        $approved = (bool)($this->xpath('approved') === '1');
+        $approved = (bool) ($this->xpath('approved') === '1');
 
         $return = array(
             'approved'        => $approved,
@@ -161,9 +155,8 @@ class Yapikredi extends Gateway {
         return $return;
     }
 
-
     /**
-     * 
+     *
      */
     public function refund($order_id, $transactionNo, $amount, $currencyCode)
     {
@@ -180,13 +173,15 @@ class Yapikredi extends Gateway {
         $return = $this->voidResponse();
         $return['transactionType'] = 'refund';
         $return['amount'] = $amount / 100;
+
         return $return;
     }
 
-
     public function saleTds($order_id, $card, $amount, $currency = 'TRY', $installmentCount = 0, $cardHolder = 'OSMAN')
     {
-        if ($order_id == NULL) $order_id = $this->generateId(20);
+        if ($order_id == null) {
+            $order_id = $this->generateId(20);
+        }
         $amount       = $this->parseAmount($amount);
         $ccNo         = $this->parseCCNo($card['no']);
         $ccExp        = $this->parseExp($card['exp']);
@@ -217,10 +212,9 @@ class Yapikredi extends Gateway {
         return $this->saleTdsResponse();
     }
 
-
     protected function saleTdsResponse()
     {
-        $approved = (bool)($this->xpath('approved') === '1');
+        $approved = (bool) ($this->xpath('approved') === '1');
 
         $form = array(
             'mid'               => $this->config('mid'),
@@ -248,13 +242,12 @@ class Yapikredi extends Gateway {
         return $return;
     }
 
-
     /**
-     * 
+     *
      */
-    public function saleTdsCallback($input = NULL)
+    public function saleTdsCallback($input = null)
     {
-        if ($input === NULL) {
+        if ($input === null) {
             $input = Input::only('BankPacket');
         }
 
@@ -266,21 +259,14 @@ class Yapikredi extends Gateway {
         $this->request['oosTranData'] = $tdsTransaction;
 
         $this->performTransaction('tds');
+
         return $this->saleTdsResponse();
     }
-
 
     protected function parseExp($exp)
     {
         $exp = parent::parseExp($exp);
         // YYAA
-        return $exp['year'] . $exp['month'];
+        return $exp['year'].$exp['month'];
     }
-
-    
-
-
 }
-
-
-

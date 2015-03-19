@@ -1,12 +1,10 @@
 <?php namespace Refik\Payment\Gateway;
 
-
-class Garanti extends Gateway {
-
-
+class Garanti extends Gateway
+{
     protected $xmlRoot           = 'GVPSRequest';
-    protected $xmlAddDeclaration = TRUE;
-    protected $xmlFormatOutput   = TRUE; // Tek satır XML String için FALSE
+    protected $xmlAddDeclaration = true;
+    protected $xmlFormatOutput   = true; // Tek satır XML String için FALSE
 
     protected $request = array(
         'Mode'        => 'TEST',
@@ -63,10 +61,8 @@ class Garanti extends Gateway {
         'JPY' => '392',
     );
 
-
     protected function prepareRequest($endpointType = 'xml')
     {
-
         $endpoint       = $this->config('endpoint');
         $this->endpoint = $endpoint[$endpointType];
 
@@ -80,22 +76,20 @@ class Garanti extends Gateway {
         //$this->requestBody = 'xmldata=' . urldecode($this->requestBody);
     }
 
-
     protected function makeHash()
     {
         $args = func_get_args();
         $str  = implode('', $args);
 
         //error_log( var_dump($args) );
-        return strtoupper( sha1($str) );
+        return strtoupper(sha1($str));
     }
-
 
     protected function secureKey($secureKeyField)
     {
         $terminal = str_pad($this->config('terminal'), 9, '0', STR_PAD_LEFT);
         $provpass = $this->config($secureKeyField);
-        
+
         return $this->makeHash($provpass, $terminal);
     }
 
@@ -125,24 +119,23 @@ class Garanti extends Gateway {
         return parent::generateId($len);
     }
 
-
     protected function isApproved()
     {
-        return (bool)($this->xpath('Response/ReasonCode') == '00' OR $this->xpath('Response/Code') == '00');
+        return (bool) ($this->xpath('Response/ReasonCode') == '00' or $this->xpath('Response/Code') == '00');
     }
-
 
     protected function parseExp($exp)
     {
         $exp = parent::parseExp($exp);
         // AAYY
-        return $exp['month'] . $exp['year'];
+        return $exp['month'].$exp['year'];
     }
-
 
     public function sale($order_id, $card, $amount, $currency = 'TRY', $installmentCount = 0)
     {
-        if ($order_id == NULL) $order_id = $this->generateId();
+        if ($order_id == null) {
+            $order_id = $this->generateId();
+        }
         $amount       = $this->parseAmount($amount);
         $ccNo         = $this->parseCCNo($card['no']);
         $ccExp        = $this->parseExp($card['exp']);
@@ -154,7 +147,7 @@ class Garanti extends Gateway {
         $this->request['Transaction']['CurrencyCode'] = $currencyCode;
 
         $this->request['Order']['OrderID'] = $order_id;
-        
+
         $this->request['Card'] = array(
             'Number'     => $ccNo,
             'ExpireDate' => $ccExp,
@@ -172,9 +165,9 @@ class Garanti extends Gateway {
         $return             = $this->saleResponse();
         $return['amount']   = $amount / 100;
         $return['currency'] = $currency;
+
         return $return;
     }
-
 
     protected function saleResponse()
     {
@@ -196,13 +189,12 @@ class Garanti extends Gateway {
         return $return;
     }
 
-
     public function void($order_id, $transactionNo)
     {
         $this->request['Transaction']['Type']   = 'void';
         $this->request['Transaction']['Amount'] = '1';
         $this->request['Transaction']['OriginalRetrefNum'] = $transactionNo;
-        
+
         $this->request['Order']['OrderID'] = $order_id;
 
         $this->request['Terminal'] = [
@@ -212,12 +204,11 @@ class Garanti extends Gateway {
             'ID'         => $this->config('terminal'),
         ];
 
-
         $this->appendHashData('refundpass');
         $this->performTransaction();
+
         return $this->voidResponse();
     }
-
 
     protected function voidResponse()
     {
@@ -239,14 +230,13 @@ class Garanti extends Gateway {
         return $return;
     }
 
-
     public function refund($order_id, $transactionNo, $amount, $currencyCode)
     {
         $amount = $this->parseAmount($amount);
         $this->request['Transaction']['Type']   = 'refund';
         $this->request['Transaction']['Amount'] = $amount;
         $this->request['Transaction']['OriginalRetrefNum'] = $transactionNo;
-        
+
         $this->request['Order']['OrderID'] = $order_id;
 
         $this->request['Terminal'] = [
@@ -256,18 +246,12 @@ class Garanti extends Gateway {
             'ID'         => $this->config('terminal'),
         ];
 
-
         $this->appendHashData('refundpass');
         $this->performTransaction();
         $return = $this->voidResponse();
         $return['transactionType'] = 'refund';
         $return['amount'] = $amount / 100;
+
         return $return;
     }
-
-
-
 }
-
-
-

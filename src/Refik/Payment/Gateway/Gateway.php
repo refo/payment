@@ -1,4 +1,5 @@
-<?php namespace Refik\Payment\Gateway;
+<?php
+namespace Refik\Payment\Gateway;
 
 use Unirest\Request as Unirest;
 use Hashids\Hashids;
@@ -6,77 +7,74 @@ use SimpleXMLElement;
 use ReflectionClass;
 use DOMDocument;
 
-
-abstract class Gateway {
-
-    public $test = FALSE;
+abstract class Gateway
+{
+    public $test = false;
 
     protected $gatewayName;
 
-    protected $endpoint  = '';
-    protected $xmlRoot   = '';
-    protected $xmlAddDeclaration = TRUE;
-    protected $xmlFormatOutput = TRUE; // Tek satır string için "FALSE"
-    
-    protected $config = array();
+    protected $endpoint          = '';
+    protected $xmlRoot           = '';
+    protected $xmlAddDeclaration = true;
+    protected $xmlFormatOutput   = true; // Tek satır string için "FALSE"
+
+    protected $config            = array();
     protected $requestXML;
-    protected $request          = array();
-    protected $requestXMLString = '';
-    protected $requestBody      = '';
+    protected $request           = array();
+    protected $requestXMLString  = '';
+    protected $requestBody       = '';
 
     protected $responseXML;
     protected $responseXMLString = '';
 
     protected $xmlEncoding       = 'UTF-8';
-    
+
     protected $httpVersion       = '1.1';
 
-
     /**
-     * Constructor
+     * Constructor.
      */
     public function __construct()
     {
-        Unirest::verifyPeer(FALSE);
+        Unirest::verifyPeer(false);
         //Unirest::httpVersion($this->httpVersion);
 
         $ref = new ReflectionClass($this);
-        $this->gatewayName = strtolower( $ref->getShortName() );
+        $this->gatewayName = strtolower($ref->getShortName());
     }
 
-
     /**
-     * Initialize
-     * @param  Array  $config Should include a 'test' key
-     * 'test' key should be an array of test configuration.
-     * @return void
+     * Initialize.
+     *
+     * @param Array $config Should include a 'test' key
+     *                      'test' key should be an array of test configuration.
      */
     public function init(Array $config)
     {
         $this->config = $config;
     }
 
-
     /**
-     * 
+     *
      */
-    protected function config($key = NULL)
+    protected function config($key = null)
     {
         $c = $this->test ? $this->config['test'] : $this->config;
-        if ($key === NULL) return $c;
-        if ( isset($c[$key]) ) return $c[$key];
+        if ($key === null) {
+            return $c;
+        }
+        if (isset($c[$key])) {
+            return $c[$key];
+        }
     }
 
-
     /**
-     * Prepare request body
+     * Prepare request body.
      *
      * Şunları hazırla:
      * $this->requestXML
      * $this->requestXMLString
      * $this->requestBody
-     * 
-     * @return void
      */
     protected function prepareRequest()
     {
@@ -84,9 +82,9 @@ abstract class Gateway {
         $this->requestBody = $this->requestXMLString;
     }
 
-
     /**
-     * [performTransaction description]
+     * [performTransaction description].
+     *
      * @return [type] [description]
      */
     protected function performTransaction()
@@ -102,19 +100,16 @@ abstract class Gateway {
         $this->responseXML       = simplexml_load_string($this->responseXMLString);
     }
 
-
     /**
      * requestXML ve requestXMLString attribute'lerini doldurur
-     * aşağıdaki dönüştürmeleri yapar:
-     * 
+     * aşağıdaki dönüştürmeleri yapar:.
+     *
      * Array $this->request                to  SimpleXMLElement $this->requestXML
      * SimpleXMLElement $this->requestXML  to  String $this->requestXMLString
      *
      * Daha sonra şu attribute'ler kullanılabilir olacaktır:
      * $this->requestXML
      * $this->requestXMLString
-     * 
-     * @return void
      */
     protected function createXMLFromRequestArray()
     {
@@ -122,23 +117,21 @@ abstract class Gateway {
         $this->requestXMLString = $this->xmlStringFromXML($this->requestXML);
     }
 
-
     /**
      * Verilen array'i recursive olarak gezip XML nesnesi oluşturur.
-     * 
-     * @param  String $root     XML nesnesi için root tag
-     * @param  [type] $arr      XML'e dönüştürülecek [recursive] array
-     * @param  string $encoding XML encoding
+     *
+     * @param String $root     XML nesnesi için root tag
+     * @param [type] $arr      XML'e dönüştürülecek [recursive] array
+     * @param string $encoding XML encoding
+     *
      * @return SimpleXMLElement Dönüştürülmüş XML nesnesi
      */
     protected function xmlFromArray($root, $arr, $encoding = 'UTF-8')
     {
-        $addChild = function ($xml, $child) use (& $addChild)
-        {
-            foreach( $child as $key => $val)
-            {
-                if ( is_array($val) OR is_object($val) ) {
-                    $addChild( $xml->addChild($key), $val );
+        $addChild = function ($xml, $child) use (& $addChild) {
+            foreach ($child as $key => $val) {
+                if (is_array($val) or is_object($val)) {
+                    $addChild($xml->addChild($key), $val);
                 } else {
                     $xml->addChild($key, $val);
                 }
@@ -153,24 +146,24 @@ abstract class Gateway {
         return $xml;
     }
 
-
     /**
      * XML nesnesini, string'e dönüştürür.
-     * 
-     * @param  SimpleXMLElement $xml Dönüştürülecek XML nesnesi
-     * @return String                String olarak sunulmuş XML
+     *
+     * @param SimpleXMLElement $xml Dönüştürülecek XML nesnesi
+     *
+     * @return String String olarak sunulmuş XML
      */
     protected function xmlStringFromXML(SimpleXMLElement $xml)
     {
         $dom = new DOMDocument();
-        $dom->preserveWhiteSpace = FALSE;
+        $dom->preserveWhiteSpace = false;
         $dom->formatOutput = $this->xmlFormatOutput;  // Tek satır string için "FALSE"
-        $dom->loadXML($xml->asXML() );
+        $dom->loadXML($xml->asXML());
 
         //
         // DOMDocument::saveXML(node, LIBXML_NOEMPTYTAG)
         // LIBXML_NOEMPTYTAG: Prevent self-closing tags
-        // 
+        //
         if ($this->xmlAddDeclaration) {
             return $dom->saveXML($dom, LIBXML_NOEMPTYTAG);
         } else {
@@ -178,11 +171,12 @@ abstract class Gateway {
         }
     }
 
-
     /**
-     * Perform a xpath query on $this->responseXML
-     * @param  String $path Query path will be prefixed with '//'
-     * @return String       Query result will be casted to string
+     * Perform a xpath query on $this->responseXML.
+     *
+     * @param String $path Query path will be prefixed with '//'
+     *
+     * @return String Query result will be casted to string
      */
     protected function xpath($path)
     {
@@ -190,38 +184,40 @@ abstract class Gateway {
         $path = '//'.$path;
         $xml = $this->responseXML;
         if (
-            is_array($xml->xpath($path)) AND
+            is_array($xml->xpath($path)) and
             isset($xml->xpath($path)[0])
         ) {
-            return (string)$xml->xpath($path)[0];
+            return (string) $xml->xpath($path)[0];
         } else {
-            return NULL;
+            return;
         }
     }
 
-
     /**
-     * 
+     *
      */
     protected function getVal($obj)
     {
         $args = func_get_args();
         array_shift($args);
 
-        foreach($args as $key) {
-            if ( is_array($obj) ){
-                if (isset($obj[$key]) ) return $obj[$key];
-            } elseif( is_object($obj)){
-                if (isset($obj->{$key}) ) return $obj->{$key};
+        foreach ($args as $key) {
+            if (is_array($obj)) {
+                if (isset($obj[$key])) {
+                    return $obj[$key];
+                }
+            } elseif (is_object($obj)) {
+                if (isset($obj->{$key})) {
+                    return $obj->{$key};
+                }
             }
         }
 
-        return NULL;
+        return;
     }
 
-
     /**
-     * 
+     *
      */
     protected function generateId($minLen = 6)
     {
@@ -232,22 +228,20 @@ abstract class Gateway {
         return $hash->encode($mtime);
     }
 
-
     /**
-     * 
+     *
      */
     protected function parseAmount($amount)
     {
         $amount = preg_replace('/[^0-9,.]/', '', $amount);
-        $amount = str_replace(array('.',','), '.', $amount);
+        $amount = str_replace(array('.', ','), '.', $amount);
         $amount = $amount * 100;
-        
-        return (int)$amount;
+
+        return (int) $amount;
     }
 
-
     /**
-     * 
+     *
      */
     protected function parseCCNo($ccNo)
     {
@@ -260,25 +254,23 @@ abstract class Gateway {
         return $ccNo;
     }
 
-
     /**
-     * 
+     *
      */
     protected function parseExp($exp)
     {
         // TODO:
         // Önceki class'dan hiç el değmeden aldım
-        // 
+        //
 
-        $format_exp = function($exp, $delim) {
+        $format_exp = function ($exp, $delim) {
             $exp   = explode($delim, $exp, 2);
             $exp_m = trim($exp[0]);
             $exp_m = str_pad($exp_m, 2, '0', STR_PAD_LEFT);
 
             $exp_y = trim($exp[1]);
             $exp_y = substr($exp_y, -2);
-            
-            
+
             //$exp   = $exp_y . $exp_m;
             //return $exp;
             return array(
@@ -286,10 +278,10 @@ abstract class Gateway {
                 'year'  => $exp_y,
             );
         };
-        
+
         $exp = trim($exp);
-        
-        switch(TRUE) {
+
+        switch (true) {
             case strpos($exp, '/') > 0:
                 $exp = $format_exp($exp, '/');
                 break;
@@ -304,15 +296,10 @@ abstract class Gateway {
                 break;
             default:
                 // Hata
-                $exp = NULL;
+                $exp = null;
                 break;
         }
 
         return $exp;
     }
-
-
 }
-
-
-
