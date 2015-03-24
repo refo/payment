@@ -7,7 +7,7 @@ Türk bankaları Sanal POS'ları için Gateway
 |:----     |:----:|:----:|:------:|:-------:|:---------------:|
 |Garanti   | √    |  √   | √      | -       | -               |
 |Yapikredi | √    |  √   | √      | -       | -               |
-|Akbank    | -    |  -   | -      | -       | -               |
+|Akbank    | √    |  √   | √      | -       | -               |
 
 ## TODO:
 
