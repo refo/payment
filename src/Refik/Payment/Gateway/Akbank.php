@@ -142,11 +142,15 @@ class Akbank extends Gateway
         $this->request['Type']     = 'Credit';
         $this->request['OrderId']  = $order_id;
         $this->request['TransId']  = $transactionNo;
-        $this->request['Total']    = $amount;
+        $this->request['Total']    = $this->parseAmount($amount);
         $this->request['Currency'] = $this->currencyCode[$currency];
 
         $this->performTransaction();
-        return $this->voidResponse();
+        $return = $this->voidResponse();
+        $return['transactionType'] = 'refund';
+        $return['amount'] = $amount;
+
+        return $return;
     }
 
 }
