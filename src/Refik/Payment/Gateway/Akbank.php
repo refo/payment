@@ -137,7 +137,7 @@ class Akbank extends Gateway
         return $return;
     }
 
-    public function refund($order_id, $transactionNo, $amount, $currencyCode)
+    public function refund($order_id, $transactionNo, $amount, $currency)
     {
         $this->request['Type']     = 'Credit';
         $this->request['OrderId']  = $order_id;
