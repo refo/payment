@@ -8,7 +8,7 @@ class Garanti extends Gateway
 
     protected $request = array(
         'Mode'        => 'TEST',
-        'Version'     => 'v0.01',
+        'Version'     => '512',
         //'ChannelCode' => '',
         'Terminal'    => array(),
         //* Zorunlu
@@ -82,7 +82,7 @@ class Garanti extends Gateway
         $str  = implode('', $args);
 
         //error_log( var_dump($args) );
-        return strtoupper(sha1($str));
+        return strtoupper(hash('sha512', $str));
     }
 
     protected function secureKey($secureKeyField)
@@ -110,6 +110,7 @@ class Garanti extends Gateway
             $this->request['Terminal']['ID'],
             $this->request['Card']['Number'],
             $this->request['Transaction']['Amount'],
+            $this->request['Transaction']['CurrencyCode'],
             $this->secureKey($secureKeyField)
         );
     }
