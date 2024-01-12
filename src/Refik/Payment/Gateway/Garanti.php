@@ -80,9 +80,16 @@ class Garanti extends Gateway
     {
         $args = func_get_args();
         $str  = implode('', $args);
-
-        //error_log( var_dump($args) );
+        
         return strtoupper(hash('sha512', $str));
+    }
+
+    protected function makeHashSha1()
+    {
+        $args = func_get_args();
+        $str  = implode('', $args);
+
+        return strtoupper(hash('sha1', $str));
     }
 
     protected function secureKey($secureKeyField)
@@ -90,7 +97,7 @@ class Garanti extends Gateway
         $terminal = str_pad($this->config('terminal'), 9, '0', STR_PAD_LEFT);
         $provpass = $this->config($secureKeyField);
 
-        return $this->makeHash($provpass, $terminal);
+        return $this->makeHashSha1($provpass, $terminal);
     }
 
     protected function appendTerminal()
